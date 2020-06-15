@@ -45,6 +45,26 @@ selectionSort xs = m:(selectionSort ys)
         m = min1 xs 
         ys = remover m xs
 
+--Msort
+
+dividir :: (Ord a) => [a] -> ([a],[a])
+dividir [] = ([],[])
+dividir [x] = ([x],[])
+dividir (x:y:xs) = ((x:ys), y:zs)
+    where (ys, zs) = dividir xs
+
+juntar :: (Ord a) => [a] -> [a] -> [a]
+juntar xs [] = xs
+juntar [] xs = xs
+juntar (x:xs)(y:ys) | x < y = x:(juntar xs (y:ys))
+                    | otherwise = y:(juntar (x:xs) ys)
+
+msort :: (Ord a) => [a] -> [a]
+msort [] = []
+msort [x] = [x]
+msort xs = juntar (msort ys) (msort zs)
+    where (ys, zs) = dividir xs
+
 --Arquivos
     
 inverte :: String -> String 
@@ -84,8 +104,21 @@ ler_arq3 y = do
     print (bubblesort(map (trans) (words conteudo)))
     hClose arq    
 
+ler_arq4 :: String -> IO() 
+ler_arq4 y = do
+    arq <- openFile y ReadMode
+    conteudo <- hGetContents arq
+    print (msort(map (trans) (words conteudo)))
+    hClose arq       
 
 programa:: String -> String -> IO()
 programa x y | (x == "insertionsort") = ler_arq y
             | (x == "selectionsort") = ler_arq2 y
             | (x == "bubblesort") = ler_arq3 y
+            | (x == "mergesort") = ler_arq4 y
+
+         
+         
+-- :set +s (Bota esse comando no GHCI que ele devolve o tempo de execução)
+
+--programa "bubblesort""1000.txt"
