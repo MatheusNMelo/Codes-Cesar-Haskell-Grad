@@ -65,6 +65,12 @@ msort [x] = [x]
 msort xs = juntar (msort ys) (msort zs)
     where (ys, zs) = dividir xs
 
+--Qsort
+
+quicksort :: (Ord a) => [a] -> [a]
+quicksort [] = []
+quicksort (x:xs) = quicksort [y | y <- xs, y <= x] ++ [x] ++ quicksort [y | y <- xs, y > x]
+
 --Arquivos
     
 inverte :: String -> String 
@@ -111,14 +117,22 @@ ler_arq4 y = do
     print (msort(map (trans) (words conteudo)))
     hClose arq       
 
+ler_arq5 :: String -> IO() 
+ler_arq5 y = do
+    arq <- openFile y ReadMode
+    conteudo <- hGetContents arq
+    print (quicksort(map (trans) (words conteudo)))
+    hClose arq      
+
 programa:: String -> String -> IO()
 programa x y | (x == "insertionsort") = ler_arq y
             | (x == "selectionsort") = ler_arq2 y
             | (x == "bubblesort") = ler_arq3 y
             | (x == "mergesort") = ler_arq4 y
+            | (x == "quicksort") = ler_arq5 y
 
          
          
 -- :set +s (Bota esse comando no GHCI que ele devolve o tempo de execução)
 
---programa "bubblesort""1000.txt"
+--programa "quciksort""1000.txt"
